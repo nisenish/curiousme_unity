@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+environment/project/com.android.toolchain.gcc.736956931/PVRSDKDIR/delimiter=;
+environment/project/com.android.toolchain.gcc.736956931/PVRSDKDIR/operation=append
+environment/project/com.android.toolchain.gcc.736956931/PVRSDKDIR/value=E\:\\Soft\\Dev\\PowerVR_Graphics\\PowerVR_SDK\\SDK_3.5
+environment/project/com.android.toolchain.gcc.736956931/append=true
+environment/project/com.android.toolchain.gcc.736956931/appendContributed=true
