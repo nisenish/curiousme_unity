@@ -111,7 +111,7 @@ public class VideoActivity extends UnityCardboardActivity {
 	final int				weightSum = 16;
 	final int 				MY_REQUEST_BLUETOOTH = 1002;
 	final int				max_video = 45; // number of videos are 44 right now
-	final int				max_loader = 14; // number of videos are 44 right now
+	final int				max_loader = 13; // number of videos are 44 right now
 	
 	//17, 4, 6, 16 10, 11, 18, 20
 	//final int[]				videoOrder = {1, 9, 5, 15, 14, 8, 13, 2, 7, 3, 19, 12, 17, 4, 6, 16, 10, 11, 18, 20};
