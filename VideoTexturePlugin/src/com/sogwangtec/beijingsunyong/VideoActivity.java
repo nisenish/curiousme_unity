@@ -59,7 +59,8 @@ public class VideoActivity extends UnityCardboardActivity {
 	private	TextView		shakeRightTextView;
 	
 	private ProgressBar		downloadProgressbar;
-	private ProgressBar		waitingProgressbar;
+	//private ProgressBar		waitingProgressbar;
+	private WebView			waitingProgressbar;
 	
 	private LinearLayout 	waitingContainerLayout;
 	//private ProgressBar		waitingLeftProgressbar;
@@ -110,8 +111,11 @@ public class VideoActivity extends UnityCardboardActivity {
 	final String			exitString = "Exit";
 	final int				weightSum = 16;
 	final int 				MY_REQUEST_BLUETOOTH = 1002;
-	final int				max_video = 45; // number of videos are 44 right now
-	final int				max_loader = 13; // number of videos are 44 right now
+	
+	String[] videos 	= 	{"1","2","3","5","8","9","10","12","14","15","16","17","19","20","21","22","25","26","33","34","35","36","42","43","44","45","46","47","48","49"};
+	final int				max_video = 50; // TODO: last number is 49, but the count is less, so there are gaps
+	final int				max_loader_sq = 11; // number of square loaders is 10 now
+	final int				max_loader_rc = 3; // number of rectangle loaders is 2
 	
 	//17, 4, 6, 16 10, 11, 18, 20
 	//final int[]				videoOrder = {1, 9, 5, 15, 14, 8, 13, 2, 7, 3, 19, 12, 17, 4, 6, 16, 10, 11, 18, 20};
@@ -140,7 +144,7 @@ public class VideoActivity extends UnityCardboardActivity {
         addContentView(topRelativeLayout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         topRelativeLayout.addView(progressbarWindow);
         
-        RelativeLayout.LayoutParams topParams =(RelativeLayout.LayoutParams)progressbarWindow.getLayoutParams();
+        RelativeLayout.LayoutParams topParams = (RelativeLayout.LayoutParams)progressbarWindow.getLayoutParams();
         topParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         topParams.height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
         
@@ -161,16 +165,33 @@ public class VideoActivity extends UnityCardboardActivity {
         RelativeLayout centerRelativeLayout = new RelativeLayout(this);
         addContentView(centerRelativeLayout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         
-        RelativeLayout.LayoutParams centerParams = new RelativeLayout.LayoutParams((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80, getResources().getDisplayMetrics()),
-        		(int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80, getResources().getDisplayMetrics()));
+        //RelativeLayout.LayoutParams centerParams = new RelativeLayout.LayoutParams((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80, getResources().getDisplayMetrics()),
+        //		(int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80, getResources().getDisplayMetrics()));
+        RelativeLayout.LayoutParams centerParams = new RelativeLayout.LayoutParams(
+        		ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         centerParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         
-        waitingProgressbar = new ProgressBar(this);
-        waitingProgressbar.setBackgroundColor(Color.parseColor("#00000000"));
-        waitingProgressbar.setMax(100);
+        //waitingProgressbar = new ProgressBar(this);
+        //waitingProgressbar.setBackgroundColor(Color.parseColor("#00000000"));
+        //waitingProgressbar.setMax(100);
+        //waitingProgressbar.setLayoutParams(centerParams);
+        //waitingProgressbar.setVisibility(View.GONE);
+        //centerRelativeLayout.addView(waitingProgressbar);
+        
+        int randomRectangleLoader = r.nextInt(max_loader_rc - 1) + 1;
+		
+        waitingProgressbar = new WebView(this);
+        waitingProgressbar.loadUrl("file:///android_asset/loaders/rectangle/" + randomRectangleLoader + ".gif");
+        waitingProgressbar.getSettings().setLoadWithOverviewMode(true);
+        waitingProgressbar.getSettings().setUseWideViewPort(true);
+        waitingProgressbar.setBackgroundColor(Color.TRANSPARENT);
         waitingProgressbar.setLayoutParams(centerParams);
         waitingProgressbar.setVisibility(View.GONE);
         centerRelativeLayout.addView(waitingProgressbar);
+        
+        
+        
+        
 
         RelativeLayout shakeCenterRelativeLayout = new RelativeLayout(this);
         addContentView(shakeCenterRelativeLayout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -262,13 +283,10 @@ public class VideoActivity extends UnityCardboardActivity {
         
         // Left and Right gif views
         
-        //Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay(); 
-        //int catWidth = display.getWidth() / 2;
+        int randomSquareLoader = r.nextInt(max_loader_sq - 1) + 1;
         
-		int randomLoaderCode = r.nextInt(max_loader - 1) + 1;
-		
         waitingLeftGif = new WebView(this);
-        waitingLeftGif.loadUrl("file:///android_asset/loaders/" + randomLoaderCode + ".gif");
+        waitingLeftGif.loadUrl("file:///android_asset/loaders/square/" + randomSquareLoader + ".gif");
         //waitingLeftGif.getSettings().setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
         waitingLeftGif.getSettings().setLoadWithOverviewMode(true);
         waitingLeftGif.getSettings().setUseWideViewPort(true);
@@ -276,8 +294,6 @@ public class VideoActivity extends UnityCardboardActivity {
         waitingLeftGif.setBackgroundColor(Color.TRANSPARENT);
         waitingLeftGif.setLayoutParams(shakeCenterParams);
         waitingContainerLayout.addView(waitingLeftGif);
-        Log.e("LeezaRicci", "LeezaRicci leftview height: " + waitingLeftGif.getContentHeight() );
-        
 		LinearLayout.LayoutParams waitingViewParams = (LinearLayout.LayoutParams)waitingLeftGif.getLayoutParams();
 		waitingViewParams.width = ViewGroup.LayoutParams.MATCH_PARENT; 
 		waitingViewParams.weight = 1;
@@ -285,17 +301,12 @@ public class VideoActivity extends UnityCardboardActivity {
 		waitingLeftGif.setLayoutParams(waitingViewParams);
 		
         waitingRightGif = new WebView(this);
-        waitingRightGif.loadUrl("file:///android_asset/loaders/" + randomLoaderCode + ".gif");
-        //waitingRightGif.getSettings().setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
+        waitingRightGif.loadUrl("file:///android_asset/loaders/square/" + randomSquareLoader + ".gif");
         waitingRightGif.getSettings().setLoadWithOverviewMode(true);
         waitingRightGif.getSettings().setUseWideViewPort(true);
-        //waitingRightGif.setPadding(0, 0, catWidth, 0);
         waitingRightGif.setBackgroundColor(Color.TRANSPARENT);
         waitingRightGif.setLayoutParams(shakeCenterParams);
         waitingContainerLayout.addView(waitingRightGif);
-        Log.e("LeezaRicci", "LeezaRicci rightview added");
-        
-        
 		waitingViewParams = (LinearLayout.LayoutParams)waitingRightGif.getLayoutParams();
 		waitingViewParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
 		waitingViewParams.weight = 1;
@@ -408,7 +419,8 @@ public class VideoActivity extends UnityCardboardActivity {
 			public void onShake() {
 				vibrator.vibrate(100);
 
-				int randomVideoCode = r.nextInt(max_video - 1) + 1;
+				//int randomVideoCode = r.nextInt(max_video - 1) + 1;
+				String randomVideoCode = (videos[r.nextInt(videos.length)]);
 
 				showDownlodingControls();
 				//loadVideo("http://www.moodme.co/curiousme/content/" + randomVideoCode + ".mp4");
